@@ -75,10 +75,10 @@ export default function Home() {
           }}
           className="flex items-center"
         >
-          <img 
+         <img 
             src="/A.Cadre.png" 
             alt="A.Cadre Logo" 
-            className="h-16 md:h-20 w-auto hover:opacity-80 transition-transform hover:scale-105 drop-shadow-lg cursor-pointer duration-300" 
+            className="h-24 md:h-32 w-auto hover:opacity-80 transition-transform hover:scale-105 drop-shadow-lg cursor-pointer duration-300" 
           />
         </a>
         

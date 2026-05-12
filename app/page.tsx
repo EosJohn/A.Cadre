@@ -192,7 +192,7 @@ export default function Home() {
         <section className="min-h-[70vh] flex flex-col justify-center mb-24 mx-auto max-w-4xl px-6 md:px-12 relative z-10">
           <p className="text-teal-400 font-mono mb-4 text-sm md:text-base tracking-wide">Hi, my name is</p>
           <h1 className={`${outfit.className} text-5xl md:text-7xl font-bold text-brand-heading mb-4 tracking-tight`}>
-            John Adrian Mijares.
+            John Adrian Mijares
           </h1>
           <h2 className={`${outfit.className} text-4xl md:text-6xl font-bold text-brand-body/60 mb-6 tracking-tight`}>
             I build logical digital systems.

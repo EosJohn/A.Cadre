@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 
 export default function ParticleNetwork() {
@@ -8,15 +8,34 @@ export default function ParticleNetwork() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  // BAGO: Track the theme inside the Canvas
+  const [theme, setTheme] = useState("dark");
+
+  // BAGO: Makinig sa Light/Dark button na nasa page.tsx
+  useEffect(() => {
+    setTheme(localStorage.getItem("theme") || "dark");
+
+    const handleThemeChange = () => {
+      setTheme(localStorage.getItem("theme") || "dark");
+    };
+
+    window.addEventListener("themeChanged", handleThemeChange);
+    return () => window.removeEventListener("themeChanged", handleThemeChange);
+  }, []);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // BAGO: Ang Magic Color Switcher natin!
+    // Slate 700 (51, 65, 85) for Light Mode | Teal 400 (45, 212, 191) for Dark Mode
+    const rgb = theme === "light" ? "51, 65, 85" : "45, 212, 191";
+
     let particlesArray: any[] = [];
     let animationFrameId: number;
-    let isRunning = true; // Dagdag na switch para sigurado
+    let isRunning = true; 
 
     const setCanvasSize = () => {
       if (canvas) {
@@ -90,7 +109,7 @@ export default function ParticleNetwork() {
         if (!ctx) return;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(45, 212, 191, 0.4)"; 
+        ctx.fillStyle = `rgba(${rgb}, 0.4)`; // Ginamit ang color variable
         ctx.fill();
       }
       update() {
@@ -122,7 +141,7 @@ export default function ParticleNetwork() {
       }
 
       constellations.forEach(constellation => {
-        ctx.strokeStyle = "rgba(45, 212, 191, 0.15)"; 
+        ctx.strokeStyle = `rgba(${rgb}, 0.15)`; // Ginamit ang color variable
         ctx.lineWidth = 2;
         ctx.beginPath();
         
@@ -141,14 +160,14 @@ export default function ParticleNetwork() {
            star.update(canvas.width, canvas.height);
            ctx.beginPath();
            ctx.arc(star.x, star.y, star.size + 1.5, 0, Math.PI*2);
-           ctx.fillStyle = "rgba(45, 212, 191, 0.9)";
+           ctx.fillStyle = `rgba(${rgb}, 0.9)`; // Ginamit ang color variable
            ctx.fill();
 
            let dx = star.x - mouse.x;
            let dy = star.y - mouse.y;
            let dist = dx*dx + dy*dy;
            if(dist < 40000) {
-             ctx.strokeStyle = `rgba(45, 212, 191, ${(1 - dist/40000) * 0.8})`;
+             ctx.strokeStyle = `rgba(${rgb}, ${(1 - dist/40000) * 0.8})`; // Ginamit ang color variable
              ctx.lineWidth = 1.5;
              ctx.beginPath();
              ctx.moveTo(star.x, star.y);
@@ -166,7 +185,7 @@ export default function ParticleNetwork() {
 
           if (distance < 12000) {
             let opacityValue = 1 - distance / 12000;
-            ctx!.strokeStyle = `rgba(45, 212, 191, ${opacityValue * 0.2})`;
+            ctx!.strokeStyle = `rgba(${rgb}, ${opacityValue * 0.2})`; // Ginamit ang color variable
             ctx!.lineWidth = 1;
             ctx!.beginPath();
             ctx!.moveTo(particlesArray[a].x, particlesArray[a].y);
@@ -179,18 +198,16 @@ export default function ParticleNetwork() {
       animationFrameId = requestAnimationFrame(animate);
     };
 
-    // Initialize kapag nag-load
     init();
     animate();
 
-    // AGGRESSIVE WAKE-UP TRIGGERS
     const handleWakeUp = () => {
-      init(); // Re-calculate everything
+      init(); 
     };
 
     window.addEventListener("resize", handleWakeUp);
-    window.addEventListener("popstate", handleWakeUp); // Para sa swipe back gesture
-    window.addEventListener("pageshow", handleWakeUp); // Para sa browser caching
+    window.addEventListener("popstate", handleWakeUp); 
+    window.addEventListener("pageshow", handleWakeUp); 
 
     return () => {
       isRunning = false;
@@ -201,13 +218,23 @@ export default function ParticleNetwork() {
       window.removeEventListener("pageshow", handleWakeUp);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [pathname, searchParams]); 
+  // BAGO: Dinagdag natin ang 'theme' dito para kapag nag-click ka, magre-redraw agad ang stars!
+  }, [pathname, searchParams, theme]); 
 
-  return (
-    <canvas 
-      key={pathname} 
-      ref={canvasRef} 
-      className="fixed inset-0 z- pointer-events-none opacity-70" 
-    />
+return (
+    <>
+      {/* 1. SOLID BACKGROUND: Ito yung magpapalit ng puti at dark navy */}
+      <div 
+        className={`fixed inset-0 pointer-events-none transition-colors duration-500 ${theme === 'light' ? 'bg-slate-50' : 'bg-[#0f172a]'}`} 
+        aria-hidden="true" 
+      />
+      
+      {/* 2. STARS LAYER: Tinanggal natin yung z-[-1] para hindi siya lumubog! Nakapatong na siya agad sa background natin. */}
+      <canvas 
+        key={pathname} 
+        ref={canvasRef} 
+        className="fixed inset-0 pointer-events-none opacity-70" 
+      />
+    </>
   );
 }

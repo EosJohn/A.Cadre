@@ -19,7 +19,27 @@ export default function Home() {
   const [isNavVisible, setIsNavVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // 3. YUNG LOGIC NATIN PARA SA AUTO-HIDE MENU:
+
+  // Logic para sa Light / Dark Theme Toggle
+  const [theme, setTheme] = useState("dark");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    setTheme(savedTheme);
+  }, []);
+
+ const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    
+    // BAGO: I-broadcast sa buong website na nagpalit ng kulay!
+    window.dispatchEvent(new Event("themeChanged")); 
+  };
+
+  // 3.  LOGIC PARA SA AUTO-HIDE MENU:
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -38,42 +58,48 @@ export default function Home() {
   }, [lastScrollY]);
 
 
- return (
-    <div className="bg-transparent min-h-screen font-sans selection:bg-teal-400 selection:text-brand-canvas flex flex-col relative">
-{/* TOP NAVIGATION (Smart Auto-Hide Glass Panel) */}
-        <nav className={`fixed top-0 z-50 w-full flex items-center justify-between px-6 py-2 md:py-3 md:px-12 lg:px-20 bg-brand-canvas/80 backdrop-blur-md border-b border-slate-700/50 transition-all duration-500 ease-in-out ${isNavVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'}`}>
+   return (
+    // Tinanggal na natin yung background colors dito sa main wrapper
+    <div className={`min-h-screen font-sans selection:bg-teal-400 flex flex-col relative transition-colors duration-500 ${theme === 'light' ? 'text-slate-800' : 'text-slate-300'}`}>
+      
+
+      {/* TOP NAVIGATION (Smart Auto-Hide Glass Panel) */}
+      <nav className={`fixed top-0 z-50 w-full flex items-center justify-between px-6 py-2 md:py-3 md:px-12 lg:px-20 backdrop-blur-md border-b transition-all duration-500 ease-in-out ${isNavVisible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'} ${theme === 'light' ? 'bg-white/80 border-slate-200' : 'bg-[#0f172a]/80 border-slate-700/50'}`}>
+        
+        {/* LOGO */}
+        <a 
+          href="#" 
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+          className="flex items-center"
+        >
+          <img 
+            src="/A.Cadre.png" 
+            alt="A.Cadre Logo" 
+            className="h-16 md:h-20 w-auto hover:opacity-80 transition-transform hover:scale-105 drop-shadow-lg cursor-pointer duration-300" 
+          />
+        </a>
+        
+        {/* DESKTOP MENU WITH RESUME BUTTON & THEME TOGGLE */}
+        <div className="hidden md:flex items-center gap-8 lg:gap-10">
+          <ul className={`flex gap-8 lg:gap-10 text-sm font-medium tracking-wide ${theme === 'light' ? 'text-slate-600' : 'text-slate-300'}`}>
+            {['about', 'experience', 'projects', 'education', 'contact'].map((item, index) => (
+              <li key={item} className="flex items-center">
+                <a 
+                  href={`#${item}`} 
+                  className={`capitalize transition-colors hover:text-teal-400 ${activeSection === item ? 'text-teal-400 font-bold' : ''}`}
+                >
+                  <span className="text-teal-400 font-mono mr-1.5 text-xs">0{index + 1}.</span>
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
           
-          {/* LOGO */}
-          <a 
-            href="#" 
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="flex items-center"
-          >
-            <img 
-              src="/A.Cadre.png" 
-              alt="A.Cadre Logo" 
-              className="h-16 md:h-20 w-auto hover:opacity-80 transition-transform hover:scale-105 drop-shadow-lg cursor-pointer duration-300" 
-            />
-          </a>
-          
-          {/* DESKTOP MENU WITH RESUME BUTTON */}
-          <div className="hidden md:flex items-center gap-8 lg:gap-10">
-            <ul className="flex gap-8 lg:gap-10 text-sm font-medium tracking-wide text-brand-body">
-              {['about', 'experience', 'projects', 'education', 'contact'].map((item, index) => (
-                <li key={item} className="flex items-center">
-                  <a 
-                    href={`#${item}`} 
-                    className={`capitalize transition-colors hover:text-teal-400 ${activeSection === item ? 'text-teal-400' : ''}`}
-                  >
-                    <span className="text-teal-400 font-mono mr-1.5 text-xs">0{index + 1}.</span>
-                    {item}
-                  </a>
-                </li>
-              ))}
-            </ul>
+          {/* THEME TOGGLE & RESUME BUTTON */}
+          <div className="flex items-center gap-4 border-l border-slate-500/30 pl-6 ml-2">
             <a 
               href="/resume.pdf" 
               target="_blank" 
@@ -82,11 +108,43 @@ export default function Home() {
             >
               Resume
             </a>
-          </div>
 
-          {/* MOBILE MENU BUTTON */}
+            {/* THEME TOGGLE BUTTON (DESKTOP) */}
+            {mounted && (
+              <button 
+                onClick={toggleTheme}
+                className={`p-2 rounded-full transition-colors ${theme === 'dark' ? 'text-teal-400 hover:bg-teal-400/10' : 'text-amber-500 hover:bg-amber-500/10'}`}
+                aria-label="Toggle Theme"
+              >
+                {theme === 'dark' ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg> // Sun Icon
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg> // Moon Icon
+                )}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* MOBILE MENU BUTTONS */}
+        <div className="md:hidden flex items-center gap-4">
+          
+          {/* THEME TOGGLE BUTTON (MOBILE) */}
+          {mounted && (
+            <button 
+              onClick={toggleTheme}
+              className={`p-1.5 rounded-full transition-colors ${theme === 'dark' ? 'text-teal-400' : 'text-amber-500'}`}
+            >
+              {theme === 'dark' ? (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" /></svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" /></svg>
+              )}
+            </button>
+          )}
+
           <button 
-            className="md:hidden text-brand-heading p-2 hover:text-teal-400 transition-colors"
+            className={`p-2 transition-colors ${theme === 'light' ? 'text-slate-800 hover:text-teal-600' : 'text-slate-200 hover:text-teal-400'}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -97,34 +155,36 @@ export default function Home() {
               )}
             </svg>
           </button>
+        </div>
 
-          {/* MOBILE MENU DROPDOWN */}
-          {isMobileMenuOpen && (
-            <div className="absolute top-full left-0 w-full bg-brand-surface/95 backdrop-blur-md border-b border-slate-700/50 shadow-lg md:hidden flex flex-col px-6 py-6 gap-6 items-center">
-              {['about', 'experience', 'projects', 'education', 'contact'].map((item, index) => (
-                <a 
-                  key={item}
-                  href={`#${item}`} 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`capitalize text-sm font-medium transition-colors hover:text-teal-400 ${activeSection === item ? 'text-teal-400' : 'text-brand-body'}`}
-                >
-                  <span className="text-teal-400 font-mono mr-2">0{index + 1}.</span>
-                  {item}
-                </a>
-              ))}
+        {/* MOBILE MENU DROPDOWN */}
+        {isMobileMenuOpen && (
+          <div className={`absolute top-full left-0 w-full backdrop-blur-md border-b shadow-lg md:hidden flex flex-col px-6 py-6 gap-6 items-center ${theme === 'light' ? 'bg-white/95 border-slate-200' : 'bg-[#0f172a]/95 border-slate-700/50'}`}>
+            {['about', 'experience', 'projects', 'education', 'contact'].map((item, index) => (
               <a 
-                href="/resume.pdf" 
-                target="_blank" 
-                rel="noopener noreferrer"
+                key={item}
+                href={`#${item}`} 
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="w-full text-center border border-teal-400 text-teal-400 px-4 py-3 rounded font-mono text-sm hover:bg-teal-400/10 transition-colors mt-2"
+                className={`capitalize text-sm font-medium transition-colors hover:text-teal-400 ${activeSection === item ? 'text-teal-400' : (theme === 'light' ? 'text-slate-700' : 'text-slate-300')}`}
               >
-                Resume
+                <span className="text-teal-400 font-mono mr-2">0{index + 1}.</span>
+                {item}
               </a>
-            </div>
-          )}
-        </nav>
-        
+            ))}
+            <a 
+              href="/resume.pdf" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="w-full text-center border border-teal-400 text-teal-400 px-4 py-3 rounded font-mono text-sm hover:bg-teal-400/10 transition-colors mt-2"
+            >
+              Resume
+            </a>
+          </div>
+        )}
+      </nav>
+
+
       {/* MAIN CONTENT CONTAINER */}
       <main className="w-full pt-32 pb-24 flex-grow relative z-10">
         

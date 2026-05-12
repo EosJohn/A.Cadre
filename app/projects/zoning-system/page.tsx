@@ -4,7 +4,7 @@ import { Outfit } from "next/font/google";
 const outfit = Outfit({ subsets: ["latin"] });
 
 export default function ZoningSystemPage() {
-  // Array ng mga screenshots (Make sure andito sa public/zoning/ ang files mo)
+  // Array ng mga screenshots 
   const systemScreenshots = [
     { src: "/zoning/Dashboard.png", title: "Main Dashboard", desc: "The command center of the system providing real-time overview of pending applications and municipal zoning statistics." },
     { src: "/zoning/ApplicationForm.png", title: "Smart Application Form", desc: "A streamlined data entry interface with built-in validation to ensure all permit requirements are captured accurately." },

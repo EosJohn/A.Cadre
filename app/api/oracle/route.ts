@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const origin = req.headers.get("origin");
   // ... the rest of your code stays exactly the same
 const allowedOrigins = [
-  "https://jam-portfolio.vercel.app", 
+  "https://acadre.vercel.app",  // 
   "http://localhost:3000"
 ];
   if (!allowedOrigins.includes(origin || "")) {

@@ -1,12 +1,13 @@
 import Groq from "groq-sdk";
 import { NextResponse } from "next/server";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
 export async function POST(req: Request) {
+  // DITO MO ILAGAY SA LOOB PARA SAFE SA VERCEL BUILD
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
   // CORS Check
   const origin = req.headers.get("origin");
+  // ... the rest of your code stays exactly the same
   const allowedOrigins = [
     "https://acadre.vercel.app", 
     "http://localhost:3000"

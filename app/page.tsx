@@ -5,6 +5,8 @@ import { Outfit } from "next/font/google";
 import Link from "next/link";
 import { experienceData, projectsData, educationData, certificationsData } from "@/data/portfolio";
 import useActiveSection from "@/hooks/useActiveSection";
+import OracleChat from './components/OracleChat';
+
 
 const outfit = Outfit({ subsets: ["latin"] });
 
@@ -442,6 +444,8 @@ export default function Home() {
           Inspired by Brittany Chiang.
         </p>
       </footer>
+
+      <OracleChat />
     </div>
   );
 }

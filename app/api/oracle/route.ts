@@ -5,7 +5,7 @@ export async function POST(req: Request) {
   // DITO MO ILAGAY SA LOOB PARA SAFE SA VERCEL BUILD
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-  // CORS Check
+  //CORS Check
   const origin = req.headers.get("origin");
   // ... the rest of your code stays exactly the same
 const allowedOrigins = [
@@ -83,7 +83,7 @@ John Adrian Mijares is:
 - Always end responses about hiring or collaboration with: "Interested in working with John Adrian? Don't hesitate to send him an email — he's just one message away!"
 
 ## CONTACT
-- John Adrian's professional email: johnadrian@gmail.com"
+- John Adrian's professional email: johnadrian@gmail.com
 `;
 
     const completion = await groq.chat.completions.create({

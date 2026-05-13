@@ -8,10 +8,10 @@ export async function POST(req: Request) {
   // CORS Check
   const origin = req.headers.get("origin");
   // ... the rest of your code stays exactly the same
-  const allowedOrigins = [
-    "https://acadre.vercel.app", 
-    "http://localhost:3000"
-  ];
+const allowedOrigins = [
+  "https://jam-portfolio.vercel.app", 
+  "http://localhost:3000"
+];
   if (!allowedOrigins.includes(origin || "")) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }

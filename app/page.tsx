@@ -22,7 +22,7 @@ export default function Home() {
   const [lastScrollY, setLastScrollY] = useState(0);
 
 
-  // Logic para sa Light / Dark Theme Toggle
+// Logic para sa Light / Dark Theme Toggle
   const [theme, setTheme] = useState("dark");
   const [mounted, setMounted] = useState(false);
 
@@ -30,14 +30,28 @@ export default function Home() {
     setMounted(true);
     const savedTheme = localStorage.getItem("theme") || "dark";
     setTheme(savedTheme);
+    
+    // ✅ BAGO: Sabihan ang mismong HTML tag na i-apply ang dark mode pag-load
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }, []);
 
- const toggleTheme = () => {
+  const toggleTheme = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
     
-    // BAGO: I-broadcast sa buong website na nagpalit ng kulay!
+    // ✅ BAGO: Sabihan ang HTML tag na magpalit ng class kapag pinindot ang button
+    if (newTheme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    
+    // I-broadcast sa buong website na nagpalit ng kulay!
     window.dispatchEvent(new Event("themeChanged")); 
   };
 

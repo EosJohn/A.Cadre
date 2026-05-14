@@ -24,3 +24,32 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/* Itago ang default cursor sa mga laptop/desktop para lumitaw ang custom teal cursor natin */
+@media (min-width: 768px) {
+  * {
+    cursor: none !important;
+  }
+}
+
+/* LIGHT MODE (Ito ang default sa :root) */
+:root {
+  /* ... existing variables mo tulad ng --brand-canvas ... */
+  --cursor-color: #0d9488; /* Deep teal para lilitaw sa puting background */
+  --cursor-ring: rgba(13, 148, 136, 0.15);
+}
+
+/* DARK MODE (Ilagay mo ito sa loob ng dark mode class mo, pwedeng .dark o iba) */
+.dark {
+  /* ... existing dark variables mo ... */
+  --cursor-color: #2dd4bf; /* Neon teal para lilitaw sa dark background */
+  --cursor-ring: rgba(45, 212, 191, 0.15);
+}
+
+/* (Pahabol: Siguraduhing nandito pa rin yung nagtatago sa default mouse) */
+@media (min-width: 768px) {
+  * {
+    cursor: none !important;
+  }
+}

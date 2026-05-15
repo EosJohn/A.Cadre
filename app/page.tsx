@@ -1,6 +1,5 @@
 "use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Outfit } from "next/font/google";
 import Link from "next/link";
 import { experienceData, projectsData, educationData, certificationsData } from "@/data/portfolio";
@@ -280,8 +279,9 @@ export default function Home() {
         </div>
         <p className={`text-sm font-mono transition-colors duration-500 ${theme === 'light' ? 'text-slate-500' : 'text-brand-body/50'}`}>Built by John Adrian Mijares. <br className="md:hidden" />Inspired by Brittany Chiang.</p>
       </footer>
-
-      <OracleChat />
+   <Suspense fallback={null}>
+        <OracleChat />
+      </Suspense>
     </div>
   );
 }

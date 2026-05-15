@@ -15,18 +15,20 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // ✅ FIX 1: Nilagyan natin ng overflow-x-hidden sa html at body para walang kaba sa responsive
     <html lang="en" className="scroll-smooth overflow-x-hidden">
       <body className={`${dmSans.className} bg-brand-canvas text-brand-navy antialiased relative min-h-screen overflow-x-hidden`}>
         
         {/* 1. OVERLAYS (Highest Z) */}
-        {/* Ang z-index nito ay handled internally (dapat > 100) */}
-        <CustomCursor /> 
-        <SplashScreen /> 
+        {/* ✅ BULLETPROOF FIX: Binalot natin ng Suspense ang mga ito para hindi mag-panic ang Vercel pag nag-build ng 404 page */}
+        <Suspense fallback={null}>
+          <CustomCursor /> 
+        </Suspense>
+        
+        <Suspense fallback={null}>
+          <SplashScreen /> 
+        </Suspense>
         
         {/* 2. BACKGROUND PARTICLES (Lowest Z) */}
-        {/* ✅ BULLETPROOF FIX: Gumamit tayo ng z-[-1] at pointer-events-none. 
-            Ibig sabihin, nasa pinakailalim siya at multo lang siya, hindi makakaharang sa click. */}
         <div className="fixed inset-0 z-[-1] pointer-events-none opacity-50">
           <Suspense fallback={null}>
             <ParticleNetwork />
@@ -34,7 +36,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </div>
         
         {/* 3. MAIN CONTENT Wrapper (Middle Z) */}
-        {/* ✅ SECRET SAUCE: Ang "relative z-10" dito ang pumwersa sa content na umibabaw sa particles. */}
         <div className="relative z-10 bg-transparent min-h-screen w-full">
           {children}
         </div>

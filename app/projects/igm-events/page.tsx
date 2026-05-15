@@ -1,17 +1,46 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Outfit } from "next/font/google";
+import { useRouter } from "next/navigation"; // ✅ BAGO: Inimport ang useRouter
 
 const outfit = Outfit({ subsets: ["latin"] });
 
 export default function IGMBrandingPage() {
+  const [theme, setTheme] = useState("dark");
+  const [mounted, setMounted] = useState(false);
+  const router = useRouter(); // ✅ BAGO: Tinawag ang router
+
+  useEffect(() => {
+    setMounted(true);
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    setTheme(savedTheme);
+  }, []);
+
+  // ✅ BAGO: Ang function na nagpa-pause ng smooth scroll
+  const handleInstantBack = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault(); 
+    document.documentElement.classList.remove("scroll-smooth");
+    router.push("/#projects");
+    setTimeout(() => {
+      document.documentElement.classList.add("scroll-smooth");
+    }, 500);
+  };
+
+  if (!mounted) return null;
+
   return (
-    <div className="bg-brand-canvas min-h-screen font-sans selection:bg-teal-400 selection:text-brand-canvas text-brand-body flex flex-col relative z-50">
+    // ✅ TRANSPARENT WRAPPER para lumusot ang particles, plus DYNAMIC text colors
+    <div className={`min-h-screen font-sans selection:bg-teal-400 selection:text-white flex flex-col relative transition-colors duration-500 ${theme === 'light' ? 'text-slate-800' : 'text-slate-300'}`}>
       
       {/* TOP NAV */}
       <nav className="w-full max-w-6xl mx-auto px-6 md:px-12 py-8 relative z-10">
+        {/* ✅ BINALIK NATIN SA /#projects AT NILAGYAN NG onClick PARA INSTANT SNAP! */}
         <Link 
           href="/#projects" 
-          className="inline-flex items-center text-teal-400 hover:text-teal-300 transition-colors font-mono text-sm group"
+          onClick={handleInstantBack}
+          className={`inline-flex items-center hover:text-teal-400 transition-colors font-mono text-sm group ${theme === 'light' ? 'text-slate-600' : 'text-teal-400'}`}
         >
           <svg className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -23,19 +52,19 @@ export default function IGMBrandingPage() {
       {/* HEADER */}
       <header className="w-full max-w-4xl mx-auto px-6 pt-8 pb-16 relative z-10">
         <div className="flex flex-col gap-4">
-          <h1 className={`${outfit.className} text-4xl md:text-6xl font-bold text-brand-heading tracking-tight`}>
+          <h1 className={`${outfit.className} text-4xl md:text-6xl font-bold tracking-tight transition-colors duration-500 ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>
             IGM Events Branding
           </h1>
           <p className="text-teal-400 font-mono text-sm tracking-widest uppercase">Visual Identity & Graphic Design</p>
         </div>
         
-        <p className="text-xl text-brand-body/80 leading-relaxed max-w-3xl mt-8 mb-10">
+        <p className={`text-xl leading-relaxed max-w-3xl mt-8 mb-10 transition-colors duration-500 ${theme === 'light' ? 'text-slate-700' : 'text-slate-300'}`}>
           A freelance design project focused on building the visual foundation for IGM Events. The goal was to create a standout brand identity through premium logo design and engaging digital marketing materials.
         </p>
 
         <div className="flex flex-wrap gap-3">
           {["Graphic Design", "Logo Creation", "Brand Identity", "Social Media Assets", "Typography"].map((tech) => (
-            <span key={tech} className="bg-teal-400/10 border border-teal-400/30 text-teal-300 px-4 py-1.5 text-sm font-mono rounded-full font-semibold">
+            <span key={tech} className="bg-teal-400/10 border border-teal-400/30 text-teal-600 dark:text-teal-300 px-4 py-1.5 text-sm font-mono rounded-full font-semibold">
               {tech}
             </span>
           ))}
@@ -45,9 +74,11 @@ export default function IGMBrandingPage() {
       {/* CASE STUDY DETAILS */}
       <section className="w-full max-w-5xl mx-auto px-6 mb-32 space-y-16 relative z-10">
         
-        <div className="grid md:grid-cols-3 gap-12 border-t border-slate-700/50 pt-12">
+        <div className={`grid md:grid-cols-3 gap-12 border-t pt-12 transition-colors duration-500 ${theme === 'light' ? 'border-slate-300' : 'border-slate-700/50'}`}>
           <div className="md:col-span-2 space-y-6">
-            <h2 className={`${outfit.className} text-2xl font-bold text-brand-heading`}>The Creative Process</h2>
+            <h2 className={`${outfit.className} text-2xl font-bold transition-colors duration-500 ${theme === 'light' ? 'text-slate-900' : 'text-white'}`}>
+              The Creative Process
+            </h2>
             <p className="text-lg leading-relaxed">
               In the competitive events industry, a brand needs to convey trust, creativity, and professionalism at first glance. As the lead designer for this project, I worked closely with the client to translate their business vision into a tangible visual identity.
             </p>
@@ -55,27 +86,29 @@ export default function IGMBrandingPage() {
               The project involved ideating the core logo, selecting appropriate color palettes that evoke celebration and elegance, and producing versatile digital assets ready for social media deployment.
             </p>
           </div>
-          <div className="bg-brand-surface p-6 rounded-xl border border-slate-700/50">
+          
+          {/* ✅ CARD BOX: Dynamic background para umayos sa Day Mode */}
+          <div className={`p-6 rounded-xl border backdrop-blur-sm transition-colors duration-500 ${theme === 'light' ? 'bg-white/70 border-slate-300 shadow-sm' : 'bg-brand-surface border-slate-700/50'}`}>
             <h3 className="font-bold text-teal-400 mb-4 font-mono text-xs uppercase tracking-tighter">Project Details</h3>
-            <ul className="space-y-4 text-sm text-brand-body/90">
+            <ul className={`space-y-4 text-sm transition-colors duration-500 ${theme === 'light' ? 'text-slate-700' : 'text-slate-300'}`}>
               <li>
-                <span className="block text-brand-body/50 font-mono text-xs mb-1">Role</span>
+                <span className={`block font-mono text-xs mb-1 transition-colors duration-500 ${theme === 'light' ? 'text-slate-500' : 'text-brand-body/50'}`}>Role</span>
                 Graphic / Brand Designer
               </li>
               <li>
-                <span className="block text-brand-body/50 font-mono text-xs mb-1">Deliverables</span>
+                <span className={`block font-mono text-xs mb-1 transition-colors duration-500 ${theme === 'light' ? 'text-slate-500' : 'text-brand-body/50'}`}>Deliverables</span>
                 Logo Design, Marketing Assets
               </li>
               <li>
-                <span className="block text-brand-body/50 font-mono text-xs mb-1">Client</span>
+                <span className={`block font-mono text-xs mb-1 transition-colors duration-500 ${theme === 'light' ? 'text-slate-500' : 'text-brand-body/50'}`}>Client</span>
                 IGM Events
               </li>
             </ul>
           </div>
         </div>
 
-{/* SINGLE DESIGN COMPILATION SHOWCASE */}
-        <div className="w-full bg-brand-surface rounded-2xl border border-slate-700/50 overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-[1.01]">
+        {/* SINGLE DESIGN COMPILATION SHOWCASE */}
+        <div className={`w-full rounded-2xl border overflow-hidden shadow-2xl transition-all duration-500 hover:scale-[1.01] ${theme === 'light' ? 'bg-white border-slate-300' : 'bg-brand-surface border-slate-700/50'}`}>
           <img 
             src="/igm-events/IGM.png" 
             alt="IGM Events Brand Compilation" 
@@ -86,8 +119,8 @@ export default function IGMBrandingPage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="w-full border-t border-slate-700/50 py-12 text-center mt-auto bg-brand-canvas relative z-20">
-        <p className="text-brand-body/50 text-sm font-mono">
+      <footer className={`w-full border-t py-12 text-center mt-auto relative z-20 transition-colors duration-500 ${theme === 'light' ? 'border-slate-300 bg-transparent' : 'border-slate-700/50 bg-brand-canvas'}`}>
+        <p className={`text-sm font-mono transition-colors duration-500 ${theme === 'light' ? 'text-slate-500' : 'text-brand-body/50'}`}>
           Graphic Design & Branding by John Adrian Mijares.
         </p>
       </footer>

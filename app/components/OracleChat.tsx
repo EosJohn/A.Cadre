@@ -51,32 +51,37 @@ export default function OracleChat() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
-      
+    // Outer wrapper: pointer-events-none when closed so it never blocks clicks
+    <div
+      className={`fixed bottom-6 right-6 z-40 flex flex-col items-end ${
+        isOpen ? "pointer-events-auto" : "pointer-events-none"
+      }`}
+    >
       {/* CHAT WINDOW */}
       <div
-        className={`mb-4 w-[90vw] md:w-[400px] h-[70vh] flex flex-col bg-[#0f172a]/95 backdrop-blur-md border border-teal-400/30 rounded-2xl shadow-[0_0_30px_rgba(45,212,191,0.15)] transition-all duration-300 transform origin-bottom-right ${
-          isOpen ? "scale-100 opacity-100" : "scale-0 opacity-0 pointer-events-none"
+        className={`mb-4 w-[min(340px,calc(100vw-3rem))] h-[70vh] max-h-[600px] flex flex-col bg-[#0f172a]/95 backdrop-blur-md border border-teal-400/30 rounded-2xl shadow-[0_0_30px_rgba(45,212,191,0.15)] transition-all duration-300 transform origin-bottom-right ${
+          isOpen ? "scale-100 opacity-100 pointer-events-auto" : "scale-0 opacity-0 pointer-events-none"
         }`}
       >
-                {/* ✅ HEADER SECTION - NAKAGILID NA SA LEFT */}
-          <div className="flex items-center justify-between pl-2 pr-5 py-4 border-b border-slate-700/50 bg-slate-800/50 rounded-t-2xl">
-            <div className="flex items-center">
-              <img
-                src="/oracle.png"
-                alt="A.Cadre Oracle"
+        {/* HEADER */}
+        <div className="flex items-center justify-between pl-2 pr-5 py-4 border-b border-slate-700/50 bg-slate-800/50 rounded-t-2xl">
+          <div className="flex items-center">
+            <img
+              src="/oracle.png"
+              alt="A.Cadre Oracle"
               className="w-48 md:w-56 h-auto object-contain animate-pulse -ml-4"
-              />
-            </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="text-slate-400 hover:text-white transition-colors"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
+            />
           </div>
+          <button
+            onClick={() => setIsOpen(false)}
+            className="text-slate-400 hover:text-white transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
         {/* MESSAGES AREA */}
         <div className="flex-1 overflow-y-auto p-5 custom-scrollbar flex flex-col gap-4">
           {messages.map((msg, idx) => (
@@ -129,10 +134,10 @@ export default function OracleChat() {
         </form>
       </div>
 
-      {/* ✅ FLOATING ACTION BUTTON - SVG ICON NA YUNG GAMIT */}
+      {/* FLOATING ACTION BUTTON — always pointer-events-auto so it's always clickable */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 rounded-full bg-[#0f172a] border border-teal-400/50 flex items-center justify-center shadow-[0_0_15px_rgba(45,212,191,0.3)] hover:shadow-[0_0_25px_rgba(45,212,191,0.6)] hover:scale-110 transition-all duration-300 z-50 group"
+        className="pointer-events-auto w-14 h-14 rounded-full bg-[#0f172a] border border-teal-400/50 flex items-center justify-center shadow-[0_0_15px_rgba(45,212,191,0.3)] hover:shadow-[0_0_25px_rgba(45,212,191,0.6)] hover:scale-110 transition-all duration-300 group"
       >
         {isOpen ? (
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-teal-400 group-hover:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
